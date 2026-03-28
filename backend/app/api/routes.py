@@ -36,7 +36,7 @@ class PaginatedResponse(BaseModel):
     """分页响应"""
     code: int = 200
     message: str = "success"
-    data: dict
+    data: dict | list  # 修改为支持 dict 或 list
     total: int
     page: int
     page_size: int

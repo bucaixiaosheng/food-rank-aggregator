@@ -24,77 +24,77 @@ api.interceptors.response.use(
 
 // 餐厅相关
 export const restaurantApi = {
-  search: (params: Record<string, any>) => api.get('/restaurants/search', { params }),
+  search: (params: Record<string, any>) => api.post('/search', { query: params.q || params.query || '', location: params.location, filters: params.filters }),
   list: (params?: Record<string, any>) => api.get('/restaurants', { params }),
-  getById: (id: string) => api.get(`/restaurants/${id}`),
-  getRatings: (id: string) => api.get(`/restaurants/${id}/ratings`),
-  getReviews: (id: string, params?: Record<string, any>) => api.get(`/restaurants/${id}/reviews`, { params }),
-  getRecommendations: (params?: Record<string, any>) => api.get('/restaurants/recommendations', { params }),
-  getNearby: (params: Record<string, any>) => api.get('/restaurants/nearby', { params }),
-  getDishes: (id: string) => api.get(`/restaurants/${id}/dishes`),
-  getCoupons: (id: string) => api.get(`/restaurants/${id}/coupons`),
+  getById: (id: string | number) => api.get(`/restaurants/${id}`),
+  getRatings: (id: string | number) => api.get(`/restaurants/${id}`).then(res => ({ ...res, data: res?.data?.platform_ratings || [] })),
+  getReviews: (id: string | number, params?: Record<string, any>) => api.get('/notes', { params: { restaurant_id: id, ...params } }),
+  getRecommendations: (params?: Record<string, any>) => api.get('/recommendations/daily', { params }).then(res => ({ ...res, data: res?.data?.recommendations || [] })),
+  getNearby: (params: Record<string, any>) => api.get('/restaurants/filter', { params: { ...params, distance_max: params.radius || 5 } }),
+  getDishes: (id: string | number) => Promise.resolve({ data: [] }), // 暂无菜品API，返回空数组
+  getCoupons: (id: string | number) => Promise.resolve({ data: [] }), // 暂无优惠券API，返回空数组
 }
 
 // 搜索
 export const searchApi = {
-  hotTags: () => api.get('/search/hot-tags'),
-  history: () => api.get('/search/history'),
-  suggest: (q: string) => api.get('/search/suggest', { params: { q } }),
+  hotTags: () => api.get('/users/taste-tags').then(res => ({ ...res, data: res?.data?.flavor_tags || [] })),
+  history: () => Promise.resolve({ data: [] }), // 暂无搜索历史API
+  suggest: (q: string) => api.post('/search', { query: q }).then(res => ({ ...res, data: res?.data?.data || [] })),
 }
 
 // 排行榜
 export const rankingApi = {
   top: (params?: Record<string, any>) => api.get('/rankings', { params }),
-  byTaste: () => api.get('/rankings/taste'),
-  byValue: () => api.get('/rankings/value'),
-  byDistance: (params: Record<string, any>) => api.get('/rankings/distance', { params }),
-  byPopularity: () => api.get('/rankings/popularity'),
-  byNewStore: () => api.get('/rankings/new'),
+  byTaste: () => api.get('/rankings', { params: { ranking_type: 'taste' } }),
+  byValue: () => api.get('/rankings', { params: { ranking_type: 'value' } }),
+  byDistance: (params: Record<string, any>) => api.get('/rankings', { params: { ranking_type: 'distance', ...params } }),
+  byPopularity: () => api.get('/rankings', { params: { ranking_type: 'hot' } }),
+  byNewStore: () => api.get('/rankings', { params: { ranking_type: 'new' } }),
 }
 
 // 笔记
 export const noteApi = {
   list: (params?: Record<string, any>) => api.get('/notes', { params }),
-  getById: (id: string) => api.get(`/notes/${id}`),
+  getById: (id: string | number) => api.get(`/notes/${id}`),
   create: (data: Record<string, any>) => api.post('/notes', data),
-  update: (id: string, data: Record<string, any>) => api.put(`/notes/${id}`, data),
-  delete: (id: string) => api.delete(`/notes/${id}`),
-  like: (id: string) => api.post(`/notes/${id}/like`),
+  update: (id: string | number, data: Record<string, any>) => Promise.resolve({ data: { message: '暂不支持更新' } }), // 暂无更新API
+  delete: (id: string | number) => Promise.resolve({ data: { message: '暂不支持删除' } }), // 暂无删除API
+  like: (id: string | number) => api.post(`/notes/${id}/like`),
 }
 
 // 用户/口味画像
 export const profileApi = {
-  getTasteProfile: () => api.get('/profile/taste'),
-  updateTasteProfile: (data: Record<string, any>) => api.put('/profile/taste', data),
-  getPreferences: () => api.get('/profile/preferences'),
-  getSearchHistory: () => api.get('/profile/search-history'),
-  getTodayRecommendations: () => api.get('/profile/today-recommendations'),
+  getTasteProfile: () => api.get('/users/profile').then(res => ({ ...res, data: res?.data?.taste_profile || {} })),
+  updateTasteProfile: (data: Record<string, any>) => api.put('/users/profile', data),
+  getPreferences: () => api.get('/users/taste-tags'),
+  getSearchHistory: () => Promise.resolve({ data: [] }), // 暂无搜索历史API
+  getTodayRecommendations: () => api.get('/recommendations/daily').then(res => ({ ...res, data: res?.data?.recommendations || [] })),
 }
 
 // 收藏
 export const favoriteApi = {
-  list: (group?: string) => api.get('/favorites', { params: { group } }),
-  add: (data: { restaurant_id: string; group: string }) => api.post('/favorites', data),
-  remove: (id: string) => api.delete(`/favorites/${id}`),
-  move: (id: string, group: string) => api.put(`/favorites/${id}`, { group }),
-  getGroups: () => api.get('/favorites/groups'),
-  createGroup: (name: string) => api.post('/favorites/groups', { name }),
+  list: (group?: string) => api.get('/favorites', { params: { target_type: group ? undefined : 'restaurant', group_name: group } }),
+  add: (data: { restaurant_id: string | number; group: string }) => api.post('/favorites', { target_type: 'restaurant', target_id: data.restaurant_id, group_name: data.group }),
+  remove: (id: string | number) => api.delete(`/favorites/${id}`),
+  move: (id: string | number, group: string) => Promise.resolve({ data: { message: '暂不支持移动分组' } }), // 暂无移动API
+  getGroups: () => Promise.resolve({ data: [] }), // 暂无分组API
+  createGroup: (name: string) => Promise.resolve({ data: { message: '暂不支持创建分组' } }), // 暂无创建分组API
 }
 
 // 天气
 export const weatherApi = {
-  getCurrent: () => api.get('/weather'),
-  getRecommendation: () => api.get('/weather/recommendation'),
+  getCurrent: () => Promise.resolve({ data: { weather: 'sunny', temp: '26°C' } }), // 暂无当前天气API
+  getRecommendation: () => api.get('/recommendations/weather'),
 }
 
 // 心情推荐
 export const moodApi = {
-  recommend: (mood: string) => api.get('/mood/recommend', { params: { mood } }),
+  recommend: (mood: string) => api.post('/recommendations/mood', { mood }),
 }
 
 // 随机推荐
 export const randomApi = {
-  get: (params?: Record<string, any>) => api.get('/random', { params }),
+  get: (params?: Record<string, any>) => api.get('/recommendations/random', { params }),
 }
 
 export default api
