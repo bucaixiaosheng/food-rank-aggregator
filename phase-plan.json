@@ -1,0 +1,568 @@
+{
+  "phase_plan": {
+    "status": "planning",
+    "version": "1.0",
+    "created_at": "2026-03-28T14:14:00+08:00",
+    "project_name": "food-rank-aggregator",
+    "display_name": "🍽️ 吃什么 - 餐饮聚合推荐平台",
+    "github_repo": "git@github.com:bucaixiaosheng/food-rank-aggregator.git",
+    "tech_stack": ["Python", "FastAPI", "Vue3", "SQLite", "Playwright", "TailwindCSS"],
+    "description": "为吃货打造的多平台餐饮聚合推荐平台，聚合美团、大众点评、小红书等平台数据，通过AI智能推荐帮助用户发现美食。",
+
+    "features": [
+      "F1. 智能口味搜索 - 自然语言输入口味偏好，AI解析意图并匹配餐厅",
+      "F2. 多平台数据聚合 - 美团/大众点评/小红书/高德多源爬取排行榜数据",
+      "F3. 智能排序推荐 - 按口味匹配度、评分、距离综合排序返回Top10",
+      "F4. 多维筛选过滤 - 价格区间/距离范围/评分门槛/菜系/营业状态等二次筛选",
+      "F5. AI口味画像 - 基于用户历史搜索和收藏，自动学习口味偏好生成画像",
+      "F6. 探店笔记社区 - 用户分享探店体验，图文并茂的美食日记",
+      "F7. 好友互推 - 关注好友并接收好友推荐的餐厅",
+      "F8. 季节/天气推荐 - 根据当前季节和天气智能推荐（夏天推荐凉皮、冬天推荐火锅）",
+      "F9. 心情推荐 - 根据用户心情（开心/难过/疲惫/庆祝）推荐适合的美食",
+      "F10. 餐厅收藏夹 - 收藏喜欢的餐厅，支持自定义收藏夹分组",
+      "F11. 美食打卡地图 - 基于地图的餐厅标记，展示已打卡/想去/附近的餐厅",
+      "F12. AI美食点评摘要 - 爬取多条评论后AI生成一句话点评摘要",
+      "F13. 优惠券聚合 - 聚合各平台优惠券信息，自动匹配推荐餐厅的优惠",
+      "F14. 今日推荐 - 每日精选3家餐厅推送，基于口味画像+天气+位置",
+      "F15. 餐厅排行榜 - 综合多平台评分生成全城美食排行榜",
+      "F16. 菜系知识图谱 - 菜系分类体系，支持从菜名反查餐厅",
+      "F17. 美食日历 - 记录每天吃了什么，生成个人美食时间线",
+      "F18. 随机选餐厅 - 选择困难症福音，摇一摇随机推荐附近餐厅",
+      "F19. 黑名单管理 - 屏蔽不喜欢的餐厅或菜系，避免重复推荐",
+      "F20. 数据导出 - 导出收藏/打卡/评论数据为Excel/JSON"
+    ],
+
+    "feature_categories": {
+      "core": ["F1", "F2", "F3", "F4"],
+      "ai_smart": ["F5", "F8", "F9", "F12", "F14"],
+      "social": ["F6", "F7"],
+      "tools": ["F10", "F11", "F13", "F15", "F16", "F17", "F18", "F19", "F20"]
+    },
+
+    "architecture": {
+      "backend": {
+        "framework": "FastAPI",
+        "database": "SQLite with SQLAlchemy ORM",
+        "crawlers": "Playwright + requests + BeautifulSoup",
+        "ai_engine": "本地规则引擎 + 可选LLM API"
+      },
+      "frontend": {
+        "framework": "Vue3 + Vite",
+        "ui_library": "TailwindCSS + Element Plus",
+        "maps": "高德地图JS API",
+        "charts": "ECharts"
+      },
+      "project_structure": {
+        "backend/": "FastAPI后端服务",
+        "backend/app/api/": "API路由",
+        "backend/app/models/": "SQLAlchemy数据模型",
+        "backend/app/services/": "业务逻辑层",
+        "backend/app/crawlers/": "多平台爬虫模块",
+        "backend/app/ai/": "AI推荐引擎",
+        "backend/app/utils/": "工具函数",
+        "frontend/": "Vue3前端项目",
+        "frontend/src/views/": "页面组件",
+        "frontend/src/components/": "UI组件",
+        "frontend/src/stores/": "Pinia状态管理",
+        "frontend/src/api/": "API调用封装",
+        "docs/": "项目文档",
+        "tests/": "测试用例"
+      }
+    },
+
+    "phases": [
+      {
+        "phase_id": "phase_1",
+        "name": "项目脚手架和基础架构",
+        "description": "初始化前后端项目结构、配置文件、依赖管理、开发环境搭建",
+        "tasks": [
+          {
+            "task_id": "task_1_1",
+            "name": "创建后端项目目录结构",
+            "description": "创建backend/目录及子目录：app/api, app/models, app/services, app/crawlers, app/ai, app/utils, tests/。创建__init__.py文件。创建backend/run.py入口文件。",
+            "estimated_minutes": 5,
+            "acceptance_criteria": ["目录结构完整", "所有__init__.py存在", "run.py可启动空FastAPI应用"]
+          },
+          {
+            "task_id": "task_1_2",
+            "name": "配置后端依赖和FastAPI骨架",
+            "description": "创建pyproject.toml，配置依赖：fastapi, uvicorn, sqlalchemy, aiosqlite, httpx, playwright, beautifulsoup4, pydantic。创建main.py配置CORS、路由挂载、健康检查端点。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["pip install -e . 成功", "uvicorn main:app 启动无报错", "/health返回200"]
+          },
+          {
+            "task_id": "task_1_3",
+            "name": "创建Vue3前端项目",
+            "description": "使用Vite创建Vue3项目，安装TailwindCSS、Element Plus、Vue Router、Pinia、Axios。配置基本路由结构和主题色（美食主题暖色调）。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["npm run dev启动成功", "TailwindCSS生效", "Element Plus组件可用"]
+          },
+          {
+            "task_id": "task_1_4",
+            "name": "配置开发环境和Git",
+            "description": "创建.env.example配置模板（数据库路径、API密钥占位、爬虫配置）。创建.gitignore。创建README.md项目说明。配置pre-commit可选。",
+            "estimated_minutes": 5,
+            "acceptance_criteria": [".gitignore完整", ".env.example存在", "README.md包含项目介绍和技术栈"]
+          },
+          {
+            "task_id": "task_1_5",
+            "name": "前后端联调骨架",
+            "description": "前端配置Axios实例（baseURL指向后端），创建api/index.ts。后端添加/api/v1前缀路由。前端创建Layout组件（Header+Sidebar+Main），确认前后端通信正常。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["前端调用/health成功", "Layout布局正常显示", "API前缀正确"]
+          }
+        ],
+        "estimated_time_minutes": 34,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_2",
+        "name": "数据模型和数据库设计",
+        "description": "设计并实现所有核心数据模型，使用SQLAlchemy ORM + SQLite",
+        "tasks": [
+          {
+            "task_id": "task_2_1",
+            "name": "数据库初始化和连接配置",
+            "description": "创建backend/app/core/database.py，配置SQLAlchemy异步引擎（aiosqlite），创建session依赖注入。配置SQLite数据库文件路径（data/food_rank.db）。",
+            "estimated_minutes": 5,
+            "acceptance_criteria": ["数据库连接正常", "session依赖注入可用", "data/目录自动创建"]
+          },
+          {
+            "task_id": "task_2_2",
+            "name": "餐厅核心模型",
+            "description": "创建Restaurant模型：id, name, address, latitude, longitude, phone, cuisine_type(菜系), price_range(价格区间), rating(综合评分), description, business_hours, image_url, platform_source(数据来源), platform_id(平台ID), created_at, updated_at。创建Cuisine模型：菜系分类树。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["模型定义完整", "migration可执行", "字段类型正确"]
+          },
+          {
+            "task_id": "task_2_3",
+            "name": "用户和口味画像模型",
+            "description": "创建User模型：id, nickname, avatar, created_at。创建TasteProfile模型：id, user_id, preferred_cuisines(JSON), preferred_price_range, preferred_spice_level, flavor_tags(JSON口味标签)。创建UserActivity模型：记录用户搜索/收藏/打卡行为。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["用户模型完整", "口味画像字段合理", "活动记录模型可用"]
+          },
+          {
+            "task_id": "task_2_4",
+            "name": "社交和内容模型",
+            "description": "创建Note模型（探店笔记）：id, user_id, restaurant_id, title, content, images(JSON), rating, tags, likes_count, created_at。创建Comment模型。创建Follow模型（关注关系）。创建Favorite模型（收藏夹）：id, user_id, restaurant_id, group_name, created_at。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["笔记模型含图文", "关注关系正确", "收藏夹支持分组"]
+          },
+          {
+            "task_id": "task_2_5",
+            "name": "爬虫数据和排行榜模型",
+            "description": "创建CrawlTask模型：id, platform, status, started_at, finished_at, result_count。创建PlatformRating模型：id, restaurant_id, platform, rating, review_count, tags(JSON)。创建Ranking模型：id, name, description, restaurants(JSON排序ID列表), updated_at。创建Blacklist模型。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["爬虫任务模型可追踪", "多平台评分可存储", "排行榜模型灵活"]
+          },
+          {
+            "task_id": "task_2_6",
+            "name": "数据库迁移和种子数据",
+            "description": "创建init_db.py脚本，自动建表。插入种子数据：菜系分类（川菜/粤菜/湘菜/日料/韩餐/西餐等20+菜系）、示例餐厅10家、示例用户2个、示例笔记5篇。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["python init_db.py建表成功", "种子数据完整", "外键关系正确"]
+          }
+        ],
+        "estimated_time_minutes": 41,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_3",
+        "name": "多平台爬虫模块",
+        "description": "实现多平台数据爬取引擎，包含反爬策略、数据清洗、统一存储",
+        "tasks": [
+          {
+            "task_id": "task_3_1",
+            "name": "爬虫基类和引擎框架",
+            "description": "创建BaseCrawler抽象基类，定义crawl()、parse()、save()接口。创建CrawlerEngine调度器：管理多个爬虫、并发控制、错误重试、日志记录。创建统一数据格式RestaurantData数据类。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["基类接口清晰", "调度器可管理多爬虫", "数据格式统一"]
+          },
+          {
+            "task_id": "task_3_2",
+            "name": "反爬策略和代理管理",
+            "description": "实现UserAgent轮换池、请求间隔随机化（2-8秒）、请求头伪装。创建ProxyManager（可选代理池）。实现Cookie管理和Session保持。添加请求频率限制器。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["UA轮换正常", "请求间隔随机", "频率限制生效"]
+          },
+          {
+            "task_id": "task_3_3",
+            "name": "美团爬虫",
+            "description": "实现MeituanCrawler：爬取美团美食排行榜（按城市+菜系），解析餐厅名称/地址/评分/价格/评论数/图片。使用Playwright处理动态加载。实现增量爬取（只爬新数据）。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["可按城市+菜系爬取", "数据解析正确", "增量爬取有效"]
+          },
+          {
+            "task_id": "task_3_4",
+            "name": "大众点评爬虫",
+            "description": "实现DianpingCrawler：爬取大众点评餐厅列表和详情页，解析评分/评论/推荐菜/人均消费。注意点评的反爬（字体加密等），采用Playwright方案。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["评分和评论解析正确", "反爬处理得当", "数据存储正常"]
+          },
+          {
+            "task_id": "task_3_5",
+            "name": "小红书爬虫",
+            "description": "实现XiaohongshuCrawler：搜索美食笔记关键词，解析笔记标题/内容/图片/点赞数/收藏数。提取笔记中提到的餐厅名称，与已有餐厅数据关联。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["关键词搜索成功", "笔记内容提取完整", "餐厅名称关联正确"]
+          },
+          {
+            "task_id": "task_3_6",
+            "name": "高德扫街榜爬虫",
+            "description": "实现AmapCrawler：通过高德地图API搜索周边美食（需免费API Key），获取餐厅POI信息：名称/地址/坐标/评分/电话。实现按位置+半径搜索。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["API调用成功", "POI数据完整", "按位置搜索正常"]
+          },
+          {
+            "task_id": "task_3_7",
+            "name": "数据清洗和去重",
+            "description": "创建DataCleaner：跨平台餐厅名称模糊匹配（编辑距离+关键词提取），合并同一餐厅的多平台数据。清洗脏数据（缺失值处理、格式标准化、异常值过滤）。生成统一评分。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["同店合并准确率>80%", "数据格式统一", "评分计算合理"]
+          }
+        ],
+        "estimated_time_minutes": 61,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_4",
+        "name": "AI智能推荐引擎",
+        "description": "实现AI驱动的口味匹配、智能排序和个性化推荐",
+        "tasks": [
+          {
+            "task_id": "task_4_1",
+            "name": "口味意图解析器",
+            "description": "创建TasteParser：解析自然语言输入为结构化查询。关键词映射：'想吃辣的'→{spice:high, cuisine:Sichuan}，'清淡的'→{flavor:light}，'火锅'→{dish:hotpot}。支持模糊匹配和同义词（'川菜'='四川菜'='麻辣'）。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["自然语言解析准确", "支持10+口味关键词", "同义词扩展正常"]
+          },
+          {
+            "task_id": "task_4_2",
+            "name": "餐厅评分算法",
+            "description": "创建ScoringEngine：多维度评分 = 口味匹配度*0.3 + 平台评分*0.3 + 距离分数*0.15 + 价格匹配度*0.1 + 热度*0.1 + 新鲜度*0.05。各维度归一化到0-1。支持权重可配置。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["评分公式正确", "各维度归一化", "权重可配置"]
+          },
+          {
+            "task_id": "task_4_3",
+            "name": "智能排序和Top10推荐",
+            "description": "创建RecommendationService：根据用户口味偏好+当前位置，综合评分排序返回Top10。支持排除黑名单、排除已打卡、偏好加权。实现结果缓存（同条件5分钟内不重复计算）。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["Top10排序合理", "黑名单过滤生效", "缓存机制有效"]
+          },
+          {
+            "task_id": "task_4_4",
+            "name": "AI口味画像引擎",
+            "description": "创建TasteProfileEngine：分析用户历史行为（搜索关键词频率、收藏菜系分布、评分偏好），生成口味画像标签。画像更新策略：每次行为后异步更新。标签如：'辣王'、'日料控'、'甜品爱好者'。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["画像标签生成合理", "历史行为分析正确", "异步更新不阻塞"]
+          },
+          {
+            "task_id": "task_4_5",
+            "name": "天气/季节推荐模块",
+            "description": "创建WeatherRecommender：集成免费天气API（wttr.in），根据温度/天气状况推荐：夏天→凉皮/冰粉/沙拉，冬天→火锅/烤肉/热汤，雨天→麻辣烫/粥。创建季节-菜系映射表。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["天气API调用成功", "季节推荐合理", "映射表完整"]
+          },
+          {
+            "task_id": "task_4_6",
+            "name": "心情推荐模块",
+            "description": "创建MoodRecommender：定义心情-菜系映射（开心→甜品/烤肉，难过→巧克力/炸鸡，疲惫→清淡/汤类，庆祝→日料/西餐）。用户选择心情后，结合口味画像加权推荐。",
+            "estimated_minutes": 5,
+            "acceptance_criteria": ["心情选项完整", "推荐结果合理", "与画像结合"]
+          },
+          {
+            "task_id": "task_4_7",
+            "name": "AI美食点评摘要",
+            "description": "创建ReviewSummarizer：聚合某餐厅的多平台评论，提取关键词（'服务好'、'分量足'、'环境嘈杂'），生成一句话AI摘要。使用TF-IDF + 规则提取关键评价点。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["评论聚合正确", "关键词提取合理", "摘要简洁准确"]
+          }
+        ],
+        "estimated_time_minutes": 51,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_5",
+        "name": "后端API接口开发",
+        "description": "实现所有REST API接口，覆盖搜索、推荐、用户、社交等全部功能",
+        "tasks": [
+          {
+            "task_id": "task_5_1",
+            "name": "搜索和推荐API",
+            "description": "POST /api/v1/search：智能口味搜索，接收query/location/filters，返回Top10推荐。GET /api/v1/restaurants：餐厅列表（分页/筛选）。GET /api/v1/restaurants/{id}：餐厅详情（含多平台评分+评论摘要+优惠券）。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["搜索接口返回正确", "分页参数生效", "详情包含多平台数据"]
+          },
+          {
+            "task_id": "task_5_2",
+            "name": "筛选和排序API",
+            "description": "GET /api/v1/restaurants/filter：多维筛选参数（price_min/max, distance_max, rating_min, cuisine, business_status）。GET /api/v1/rankings：排行榜列表。GET /api/v1/rankings/{id}：排行榜详情。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["筛选条件全部生效", "排行榜数据正确", "响应速度<500ms"]
+          },
+          {
+            "task_id": "task_5_3",
+            "name": "用户和口味画像API",
+            "description": "GET /api/v1/users/profile：获取用户口味画像。PUT /api/v1/users/profile：更新口味偏好。GET /api/v1/users/taste-tags：获取口味标签。GET /api/v1/recommendations/daily：今日推荐（3家）。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["画像接口完整", "今日推荐基于画像", "标签返回正确"]
+          },
+          {
+            "task_id": "task_5_4",
+            "name": "收藏夹和打卡API",
+            "description": "POST /api/v1/favorites：添加收藏（含分组）。GET /api/v1/favorites：收藏列表（按分组）。DELETE /api/v1/favorites/{id}。POST /api/v1/checkins：打卡记录。GET /api/v1/checkins/map：地图打卡数据（返回坐标列表）。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["收藏支持分组", "打卡记录完整", "地图数据格式正确"]
+          },
+          {
+            "task_id": "task_5_5",
+            "name": "探店笔记和社交API",
+            "description": "POST /api/v1/notes：发布探店笔记（含图片上传）。GET /api/v1/notes：笔记列表（分页/排序）。POST /api/v1/notes/{id}/like：点赞。POST /api/v1/notes/{id}/comments：评论。POST /api/v1/follow/{user_id}：关注。GET /api/v1/followers/feed：关注动态。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["笔记CRUD完整", "图片上传成功", "关注动态正确"]
+          },
+          {
+            "task_id": "task_5_6",
+            "name": "天气/心情/随机推荐API",
+            "description": "GET /api/v1/recommendations/weather：天气推荐。POST /api/v1/recommendations/mood：心情推荐（body含mood类型）。GET /api/v1/recommendations/random：随机推荐（摇一摇）。GET /api/v1/blacklist：黑名单管理。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["天气推荐合理", "心情推荐匹配", "随机推荐有效"]
+          },
+          {
+            "task_id": "task_5_7",
+            "name": "优惠券和数据导出API",
+            "description": "GET /api/v1/coupons?restaurant_id=：查询餐厅优惠券。GET /api/v1/export/favorites：导出收藏数据(JSON/CSV)。GET /api/v1/export/checkins：导出打卡数据。GET /api/v1/export/food-calendar：美食日历数据。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["优惠券查询正确", "导出格式正确", "美食日历数据完整"]
+          },
+          {
+            "task_id": "task_5_8",
+            "name": "爬虫管理API",
+            "description": "POST /api/v1/crawl/start：启动爬虫任务（指定平台/城市/菜系）。GET /api/v1/crawl/status/{task_id}：爬虫状态。GET /api/v1/crawl/history：爬取历史。实现异步任务管理（BackgroundTasks）。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["爬虫可异步启动", "状态可追踪", "历史记录完整"]
+          }
+        ],
+        "estimated_time_minutes": 58,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_6",
+        "name": "前端UI开发 - 核心页面",
+        "description": "实现前端核心页面：首页搜索、搜索结果、餐厅详情、排行榜",
+        "tasks": [
+          {
+            "task_id": "task_6_1",
+            "name": "首页 - 搜索和推荐入口",
+            "description": "首页设计：大搜索框（支持语音输入图标）+ 热门口味标签云（辣/清淡/甜/酸）+ 今日推荐卡片（3家）+ 天气推荐卡片 + 美食排行榜入口。整体暖色调美食主题。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["搜索框可输入", "标签云可点击", "今日推荐展示正确", "响应式布局"]
+          },
+          {
+            "task_id": "task_6_2",
+            "name": "搜索结果页",
+            "description": "搜索结果页：Top10餐厅卡片列表（卡片含：餐厅名/菜系标签/评分/人均/距离/AI点评摘要/优惠标签）+ 左侧筛选面板（价格/距离/评分/菜系）+ 地图视图切换按钮。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["卡片信息完整", "筛选实时生效", "排序切换正常"]
+          },
+          {
+            "task_id": "task_6_3",
+            "name": "餐厅详情页",
+            "description": "餐厅详情页：顶部大图+基本信息 + 多平台评分对比（美团/点评/小红书各自评分柱状图）+ AI评论摘要 + 推荐菜列表 + 用户探店笔记 + 优惠券信息 + 附近推荐。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["多平台评分对比展示", "评论摘要显示", "笔记列表加载"]
+          },
+          {
+            "task_id": "task_6_4",
+            "name": "排行榜页面",
+            "description": "排行榜页：全城美食Top50列表（编号/餐厅名/菜系/评分/变化趋势箭头）+ 多维度排行榜Tab（口味最佳/性价比最高/距离最近/最受欢迎/新店飙升）。支持切换城市。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["排行榜展示正确", "Tab切换正常", "变化趋势显示"]
+          },
+          {
+            "task_id": "task_6_5",
+            "name": "口味画像和今日推荐页",
+            "description": "口味画像页：雷达图展示口味维度（辣/甜/酸/咸/鲜/清淡）+ 口味标签云 + 偏好菜系饼图 + 最近搜索历史。今日推荐页：3张精选餐厅卡片 + 推荐理由（'因为你喜欢川菜'、'今天适合吃火锅'）。",
+            "estimated_minutes": 9,
+            "acceptance_criteria": ["雷达图正确渲染", "标签云展示", "推荐理由显示"]
+          }
+        ],
+        "estimated_time_minutes": 47,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_7",
+        "name": "前端UI开发 - 创新功能页面",
+        "description": "实现社交、地图、日历等创新功能的前端页面",
+        "tasks": [
+          {
+            "task_id": "task_7_1",
+            "name": "美食打卡地图页",
+            "description": "集成高德地图JS API，地图展示：绿色标记=已打卡，红色标记=想去，蓝色=附近推荐。点击标记弹出餐厅信息卡片。支持按区域/菜系筛选标记。地图自适应缩放。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["地图正确渲染", "标记分类显示", "点击弹出信息"]
+          },
+          {
+            "task_id": "task_7_2",
+            "name": "收藏夹页面",
+            "description": "收藏夹页：左侧分组列表（默认分组：想去/已去/收藏，支持自定义分组）+ 右侧餐厅卡片网格。支持拖拽移动分组、批量管理。收藏数统计。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["分组切换正常", "卡片展示正确", "支持自定义分组"]
+          },
+          {
+            "task_id": "task_7_3",
+            "name": "探店笔记社区页",
+            "description": "社区页：瀑布流笔记列表（图片+标题+作者+点赞数）+ 点击进入笔记详情（图文混排+评论区）+ 发布笔记按钮（富文本编辑+图片上传+关联餐厅+打分）。支持按热门/最新排序。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["瀑布流布局正确", "笔记详情展示完整", "发布功能正常"]
+          },
+          {
+            "task_id": "task_7_4",
+            "name": "心情推荐和随机推荐页",
+            "description": "心情推荐页：4个心情emoji选择（😄开心/😢难过/😴疲惫/🎉庆祝）→ 动画过渡 → 推荐餐厅卡片。随机推荐页：美食转盘动画/摇一摇效果 → 随机展示1家餐厅（大卡片+详细信息）。",
+            "estimated_minutes": 9,
+            "acceptance_criteria": ["心情选择有动画", "转盘动画流畅", "推荐结果展示"]
+          },
+          {
+            "task_id": "task_7_5",
+            "name": "美食日历和数据导出页",
+            "description": "美食日历页：月历视图，每天显示吃了什么（餐厅名/菜系），点击某天查看详情。打卡统计（本月打卡X次/最常吃菜系）。数据导出按钮（Excel/JSON），支持选择时间范围。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["日历正确渲染", "打卡记录显示", "导出文件可下载"]
+          },
+          {
+            "task_id": "task_7_6",
+            "name": "黑名单和个人设置页",
+            "description": "黑名单管理页：已屏蔽餐厅列表 + 已屏蔽菜系列表 + 解除屏蔽按钮。个人设置页：基本信息编辑 + 口味偏好手动调整 + 位置设置 + 通知偏好。",
+            "estimated_minutes": 6,
+            "acceptance_criteria": ["黑名单列表正确", "解除屏蔽即时生效", "设置保存成功"]
+          }
+        ],
+        "estimated_time_minutes": 51,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_8",
+        "name": "集成测试和优化",
+        "description": "端到端测试、性能优化、Bug修复",
+        "tasks": [
+          {
+            "task_id": "task_8_1",
+            "name": "后端单元测试",
+            "description": "为爬虫模块、推荐引擎、API接口编写单元测试（pytest）。覆盖：口味解析器（10个测试用例）、评分算法、数据清洗去重、API端点（TestClient）。目标覆盖率>60%。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["pytest全部通过", "覆盖率>60%", "核心逻辑有测试"]
+          },
+          {
+            "task_id": "task_8_2",
+            "name": "端到端集成测试",
+            "description": "测试完整流程：搜索→筛选→查看详情→收藏→打卡→写笔记→查看日历。测试爬虫完整流程：启动→爬取→清洗→存储→搜索可找到。修复发现的Bug。",
+            "estimated_minutes": 10,
+            "acceptance_criteria": ["主流程无阻断Bug", "爬虫端到端成功", "数据一致性正确"]
+          },
+          {
+            "task_id": "task_8_3",
+            "name": "性能优化",
+            "description": "数据库查询优化（添加索引：restaurant.cuisine_type, restaurant.rating, favorite.user_id）。API响应缓存（lru_cache）。前端：路由懒加载、图片懒加载、列表虚拟滚动。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["API响应<300ms", "前端首屏<2s", "数据库查询有索引"]
+          },
+          {
+            "task_id": "task_8_4",
+            "name": "错误处理和日志",
+            "description": "全局异常处理（FastAPI exception_handler）。统一错误响应格式。爬虫失败重试和降级（某平台爬取失败不影响其他平台）。添加结构化日志（loguru）。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["错误响应格式统一", "爬虫失败不崩溃", "日志可追踪"]
+          }
+        ],
+        "estimated_time_minutes": 35,
+        "status": "pending"
+      },
+      {
+        "phase_id": "phase_9",
+        "name": "部署、文档和发布",
+        "description": "项目文档、Docker部署、最终发布",
+        "tasks": [
+          {
+            "task_id": "task_9_1",
+            "name": "Docker部署配置",
+            "description": "创建Dockerfile（后端Python镜像）。创建docker-compose.yml（frontend + backend + SQLite volume）。创建启动脚本start.sh（一键启动）。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["docker-compose up启动成功", "前后端正常通信", "数据持久化"]
+          },
+          {
+            "task_id": "task_9_2",
+            "name": "API文档和使用手册",
+            "description": "利用FastAPI自动生成Swagger文档（/docs）。创建docs/API.md手动API文档。创建docs/DEPLOYMENT.md部署指南。创建docs/USER_GUIDE.md用户使用手册（含截图占位）。",
+            "estimated_minutes": 8,
+            "acceptance_criteria": ["Swagger文档完整", "部署指南可操作", "用户手册清晰"]
+          },
+          {
+            "task_id": "task_9_3",
+            "name": "README和项目总结",
+            "description": "完善README.md：项目介绍/功能截图/技术架构图/快速开始/项目结构说明/开发指南/贡献指南。创建docs/ARCHITECTURE.md架构设计文档。",
+            "estimated_minutes": 7,
+            "acceptance_criteria": ["README完整专业", "架构图清晰", "快速开始可复现"]
+          },
+          {
+            "task_id": "task_9_4",
+            "name": "最终Git整理和发布",
+            "description": "整理Git提交历史。添加LICENSE（MIT）。创建GitHub Release（v1.0.0）。打tag。确保所有文件已提交。最终push到远程。",
+            "estimated_minutes": 5,
+            "acceptance_criteria": ["提交历史清晰", "Release创建成功", "代码完整推送"]
+          }
+        ],
+        "estimated_time_minutes": 28,
+        "status": "pending"
+      }
+    ],
+
+    "total_estimated_time": {
+      "total_minutes": 356,
+      "total_hours": 5.9,
+      "phase_count": 9,
+      "task_count": 49,
+      "by_phase": {
+        "phase_1": 34,
+        "phase_2": 41,
+        "phase_3": 61,
+        "phase_4": 51,
+        "phase_5": 58,
+        "phase_6": 47,
+        "phase_7": 51,
+        "phase_8": 35,
+        "phase_9": 28
+      }
+    },
+
+    "risk_assessment": [
+      {
+        "risk": "反爬被封IP",
+        "impact": "high",
+        "mitigation": "请求间隔随机化+UA轮换+单次少量爬取+失败降级"
+      },
+      {
+        "risk": "大众点评字体加密",
+        "impact": "medium",
+        "mitigation": "使用Playwright渲染获取文本而非解析HTML"
+      },
+      {
+        "risk": "SQLite并发限制",
+        "impact": "low",
+        "mitigation": "单用户场景足够；未来可迁移PostgreSQL"
+      },
+      {
+        "risk": "小红书登录墙",
+        "impact": "medium",
+        "mitigation": "降级为仅爬取公开搜索结果页"
+      }
+    ],
+
+    "next_steps": [
+      "control agent确认phase plan",
+      "按phase_1开始执行coding任务",
+      "每个phase完成后更新phase plan状态"
+    ]
+  }
+}
