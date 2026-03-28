@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "axios": "^1.14.0",
     "element-plus": "^2.13.6",
     "pinia": "^3.0.4",

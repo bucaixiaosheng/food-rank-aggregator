@@ -21,6 +21,16 @@ class ScoringWeights:
     popularity: float = 0.10        # 热度
     freshness: float = 0.05         # 新鲜度（数据更新时间）
     
+    def __post_init__(self):
+        """自动验证权重之和是否为1.0"""
+        if not self.validate():
+            total = (
+                self.taste_match + self.platform_rating + 
+                self.distance + self.price_match + 
+                self.popularity + self.freshness
+            )
+            raise ValueError(f"权重之和必须为1.0，当前为{total:.2f}")
+    
     def validate(self) -> bool:
         """验证权重之和是否为1.0"""
         total = (

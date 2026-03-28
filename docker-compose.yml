@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: food-rank-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///data/food_rank.db
+      - AMAP_API_KEY=${AMAP_API_KEY:-}
+    volumes:
+      - food-rank-data:/app/data
+    restart: unless-stopped
+    networks:
+      - food-rank-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: food-rank-frontend
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_BASE_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - food-rank-network
+
+volumes:
+  food-rank-data:
+    driver: local
+
+networks:
+  food-rank-network:
+    driver: bridge
